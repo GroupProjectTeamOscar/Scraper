@@ -1,22 +1,20 @@
 import re 
-from sklearn.feature_extraction.text import CountVectorizer 
 
-#Removes all punctuation from text
-def letters(text):
-    return re.sub("[^a-zA-Z]", " ", text.get_text() ) 
-
-#turns all text to lowercase and splits words into list 
-def words(text): 
-    return letters.lower().split()
-
-vectorizer = CountVectorizer(analyzer = "word",   \
-                           tokenizer = None,    \
-                           preprocessor = None, \
-                           stop_words = None,   \
-                           max_features = 10000) 
-
-#feature extraction + convert to array
-def train_data_features(text): 
-    return vectorizer.fit_transform(text).toarray()
-  
-
+def bagOfWords(input): 
+    text = re.sub("[^a-zA-Z]", " ", input).lower().split()
+    open_file = open('wordlist.txt', 'r')
+    outputlist = []
+    output = ""
+    contents = open_file.readlines()
+    for i in range(len(contents)):
+         j=0
+         w = contents[i].strip('\n')
+         if w in text:
+            j = text.count(w)
+         outputlist.append(j)  
+         j=0
+    open_file.close()  
+    for i in outputlist:
+        output+=str(i)
+        output+='.'
+    return output
