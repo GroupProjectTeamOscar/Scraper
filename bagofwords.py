@@ -16,4 +16,5 @@ vectorizer = CountVectorizer(analyzer = "word",   \
 
 def train_data_features(text): 
     return vectorizer.fit_transform(text).toarray()
+  
 
