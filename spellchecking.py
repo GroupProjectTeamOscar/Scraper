@@ -3,9 +3,9 @@ from collections import Counter
 
 def words(text): return re.findall(r'\w+', text.lower())
 
-WORDS = Counter(words(open('big.txt', 'r').read()))
-
-def Probability(word, N=sum(WORDS.values())): 
+def Probability(word): 
+    WORDS = Counter(words(open('big.txt', 'r').read()))
+    N=sum(WORDS.values())
     "Probability of `word`."
     return WORDS[word] / N
 
