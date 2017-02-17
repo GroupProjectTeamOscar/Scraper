@@ -1,21 +1,25 @@
 import re
 from collections import Counter
 
-def words(text): return re.findall(r'\w+', text.lower())
+def words(text): return re.findall(r'\w+', text)
+
+def WORDS(): 
+    output = Counter(words(open('big.txt', 'r').read()))
+    return output
 
 def Probability(word): 
-    WORDS = Counter(words(open('big.txt', 'r').read()))
-    N=sum(WORDS.values())
+    W = Counter(words(open('big.txt', 'r').read()))
+    N=sum(W.values())
     "Probability of `word`."
-    return WORDS[word] / N
+    return W[word] / N
 
-def candidates(word): 
+def candidates(word, W): 
     "Generate possible spelling corrections for word."
-    return (known([word]) or known(edits1(word)) or known(edits2(word)) or [word])
+    return (known([word], W) or known(edits1(word), W) or known(edits2(word),W) or [word])
 
-def known(words): 
+def known(words, W): 
     "The subset of `words` that appear in the dictionary of WORDS."
-    return set(w for w in words if w in WORDS)
+    return set(w for w in words if w in W)
 
 def edits1(word):
     "All edits that are one edit away from `word`."
@@ -31,15 +35,18 @@ def edits2(word):
     "All edits that are two edits away from `word`."
     return set(e2 for e1 in edits1(word) for e2 in edits1(e1))
     
-def spellcheck(word): 
+def spellcheck(word, W): 
     "Most probable spelling correction for word."
-    return max(candidates(word), key=Probability)
+    
+    return max(candidates(word,W), key=Probability)
 
-def checktext(text): 
-    words = re.sub("[^a-zA-Z]", " ", text).split()
+def checktext(input): 
+    WORDS = Counter(words(open('big.txt', 'r').read()))
+    text = re.sub("[^a-zA-Z]", " ", input).split()
     output = ""
-    for w in words: 
-        w = spellcheck(w)
+    for w in text: 
+        w = spellcheck(w, WORDS)
         output+=w
         output+=" "
     return output
+
