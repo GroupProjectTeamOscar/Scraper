@@ -1,8 +1,10 @@
 def label(stringOfWords): 
   
+    #open file containing list of depressed phrases, and read lines
     open_file = open('depressedwords.txt', 'r')
-    depressed_words_list =[]
     contents = open_file.readlines()
+    
+    #label depending on whether it contains a phrase from the file 
     for i in range(len(contents)):
          if contents[i].strip('\n') in stringOfWords:
                 open_file.close()
