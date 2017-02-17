@@ -9,10 +9,6 @@ def Probability(word, N=sum(WORDS.values())):
     "Probability of `word`."
     return WORDS[word] / N
 
-def spellcheck(word): 
-    "Most probable spelling correction for word."
-    return max(candidates(word), key=Probability)
-
 def candidates(word): 
     "Generate possible spelling corrections for word."
     return (known([word]) or known(edits1(word)) or known(edits2(word)) or [word])
@@ -35,5 +31,15 @@ def edits2(word):
     "All edits that are two edits away from `word`."
     return set(e2 for e1 in edits1(word) for e2 in edits1(e1))
     
- 
+def spellcheck(word): 
+    "Most probable spelling correction for word."
+    return max(candidates(word), key=Probability)
 
+def checktext(text): 
+    words = re.sub("[^a-zA-Z]", " ", text).split()
+    output = ""
+    for w in words: 
+        w = spellcheck(w)
+        output+=w
+        output+=" "
+    return output
