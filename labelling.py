@@ -8,11 +8,11 @@ def depressedWords():
     open_file.close()  
     return depressed_words_list 
 
-depressedWordsList = depressedWords()
-
 def firstlabel(stringOfWords): 
     
     #takes a string and returns true if keyphase is in the string 
+    
+    depressedWordsList = depressedWords()
     
     for w in depressedWordsList:
         if w in stringOfWords: 
