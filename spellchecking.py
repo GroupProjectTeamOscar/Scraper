@@ -1,12 +1,10 @@
-#define in class so only called once 
-class ALLWORDS: 
-    W = Counter(words(open('big.txt', 'r').read()))
-
-    
 import re
 from collections import Counter
 
 def words(text): return re.findall(r'\w+', text)
+
+class ALLWORDS: 
+    W = Counter(words(open('big.txt', 'r').read()))
 
 #find probability of word from occurances of word in large text file
 def Probability(word): 
