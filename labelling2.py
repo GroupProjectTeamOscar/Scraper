@@ -14,46 +14,6 @@ def load_csv(filename):
             dataset.append(row)
     return dataset
 
-# Split a dataset into n_folds folds, of equal size
-def cross_validation_split(dataset, n_folds):
-    dataset_split = list()
-    dataset_copy = list(dataset)
-    fold_size = int(len(dataset) / n_folds)
-    for i in range(n_folds):
-        fold = list()
-        while len(fold) < fold_size:
-            index = randrange(len(dataset_copy))
-            fold.append(dataset_copy.pop(index))
-        dataset_split.append(fold)
-    return dataset_split
- 
-# Calculate accuracy percentage
-def accuracy_metric(actual, predicted):
-    correct = 0
-    for i in range(len(actual)):
-        if actual[i] == predicted[i]:
-            correct += 1
-    return correct / float(len(actual)) * 100.0
- 
-# Evaluate an algorithm using a cross validation split
-def evaluate_algorithm(dataset, algorithm, n_folds, *args):
-    folds = cross_validation_split(dataset, n_folds)
-    scores = list()
-    for fold in folds:
-        train_set = list(folds)
-        train_set.remove(fold)
-        train_set = sum(train_set, [])
-        test_set = list()
-        for row in fold:
-            row_copy = list(row)
-            test_set.append(row_copy)
-            row_copy[-1] = None
-        predicted = algorithm(train_set, test_set, *args)
-        actual = [row[-1] for row in fold]
-        accuracy = accuracy_metric(actual, predicted)
-        scores.append(accuracy)
-    return scores
- 
 # Split a dataset based on an attribute and an attribute value
 def test_split(index, value, dataset):
     left = list()
@@ -78,23 +38,10 @@ def get_split(dataset, n_features):
     for index in features:
         for row in dataset:
             groups = test_split(index, row[index], dataset)
-            balance = balance_index(groups, class_values)
-            if balance < b_score:
-                b_index, b_value, b_score, b_groups = index, row[index], balance, groups
+            gini = gini_index(groups, class_values)
+            if gini < b_score:
+                b_index, b_value, b_score, b_groups = index, row[index], gini, groups
     return {'index':b_index, 'value':b_value, 'groups':b_groups}
-
- 
-# Calculate the balance of positives in split data 
-def balance_of_results(groups, class_values):
-    balance = 0.0
-    for class_value in class_values:
-        for group in groups:
-            size = len(group)
-            if size == 0:
-                continue
-            proportion = [row[-1] for row in group].count(class_value) / float(size)
-            balance += (proportion * (1.0 - proportion))
-    return balance
  
 # Create a terminal node value
 def to_terminal(group):
@@ -144,6 +91,17 @@ def predict(node, row):
             return predict(node['right'], row)
         else:
             return node['right']
+        
+def gini_index(groups, class_values):
+    gini = 0.0
+    for class_value in class_values:
+        for group in groups:
+            size = len(group)
+            if size == 0:
+                continue
+            proportion = [row[-1] for row in group].count(class_value) / float(size)
+            gini += (proportion * (1.0 - proportion))
+    return gini
  
 # Create a random subsample from the dataset with replacement
 def subsample(dataset, ratio):
@@ -173,17 +131,18 @@ def random_forest(train, test, max_depth, min_size, sample_size, n_trees, n_feat
 seed(1)
 
 # load and prepare data
-filename = 'scraped_data.csv'
+filename = 'fake_scraped.csv'
 dataset = load_csv(filename)
 
-# evaluate algorithm
+testfile = 'test_scraped.csv'
+testset = load_csv(testfile)
+
 
 n_folds = 5
 max_depth = 10
 min_size = 1
 sample_size = 1.0
 n_features = int(sqrt(len(dataset[0])-1))
-n_trees = 5
-
-evaluate_algorithm(dataset, random_forest, n_folds, max_depth, min_size, sample_size, n_trees, n_features)
-
+n_trees = 5 
+    
+print(random_forest(dataset, dataset, max_depth, min_size, sample_size, n_trees, n_features))
