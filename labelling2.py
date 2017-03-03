@@ -13,6 +13,12 @@ def load_csv(filename):
                 continue
             dataset.append(row)
     return dataset
+   
+# Convert string column to float
+def str_column_to_float(dataset, column):
+	for row in dataset:
+		row[column] = float(row[column].strip())
+ 
 
 # Split a dataset based on an attribute and an attribute value
 def test_split(index, value, dataset):
@@ -137,11 +143,16 @@ dataset = load_csv(filename)
 testfile = 'test_scraped.csv'
 testset = load_csv(testfile)
 
+#convert strings to floats 
+for i in range(0, len(dataset[0])-1):
+	str_column_to_float(dataset, i)
+ str_column_to_float(testset, i)
+
 
 n_folds = 5
 max_depth = 10
 min_size = 1
-sample_size = 1.0
+sample_size = 0.5
 n_features = int(sqrt(len(dataset[0])-1))
 n_trees = 5 
     
