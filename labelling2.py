@@ -16,8 +16,8 @@ def load_csv(filename):
    
 # Convert string column to float
 def str_column_to_float(dataset, column):
-	for row in dataset:
-		row[column] = float(row[column].strip())
+    for row in dataset:
+        row[column] = float(row[column].strip())
  
 
 # Split a dataset based on an attribute and an attribute value
@@ -137,23 +137,17 @@ def random_forest(train, test, max_depth, min_size, sample_size, n_trees, n_feat
 seed(1)
 
 # load and prepare data
-filename = 'fake_scraped.csv'
+filename = 'firstlabelling.csv'
 dataset = load_csv(filename)
 
-testfile = 'test_scraped.csv'
+testfile = 'AnnieSet500_withoutText2.csv'
 testset = load_csv(testfile)
 
-#convert strings to floats 
-for i in range(0, len(dataset[0])-1):
-	str_column_to_float(dataset, i)
- str_column_to_float(testset, i)
-
-
-n_folds = 5
-max_depth = 10
+max_depth = 50
 min_size = 1
-sample_size = 0.5
-n_features = int(sqrt(len(dataset[0])-1))
-n_trees = 5 
+sample_size = 1.0
+
+n_features = int(sqrt(len(dataset[0])-1)) 
+n_trees = 5
     
 print(random_forest(dataset, dataset, max_depth, min_size, sample_size, n_trees, n_features))
