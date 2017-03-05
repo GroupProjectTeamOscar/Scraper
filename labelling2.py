@@ -13,7 +13,7 @@ def load_csv(filename):
                 continue
 			#josh edit test - delete username as first cell
 			del row[0]
-			######
+			###### changing indents
             dataset.append(row)
     return dataset
    
