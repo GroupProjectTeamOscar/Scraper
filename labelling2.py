@@ -11,6 +11,9 @@ def load_csv(filename):
         for row in csv_reader:
             if not row:
                 continue
+			#josh edit test - delete username as first cell
+			del row[0]
+			######
             dataset.append(row)
     return dataset
    
