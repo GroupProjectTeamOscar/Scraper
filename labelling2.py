@@ -4,16 +4,24 @@ from csv import reader
 from math import sqrt
  
 # Load a CSV file
-def load_csv(filename):
+def load_csv1(filename):
     dataset = list()
     with open(filename, 'r') as file:
         csv_reader = reader(file)
         for row in csv_reader:
             if not row:
                 continue
-			#josh edit test - delete username as first cell
-			del row[0]
-			######
+            del row[0]
+            dataset.append(row)
+    return dataset
+   
+def load_csv2(filename):
+    dataset = list()
+    with open(filename, 'r') as file:
+        csv_reader = reader(file)
+        for row in csv_reader:
+            if not row:
+                continue
             dataset.append(row)
     return dataset
    
@@ -127,24 +135,33 @@ def bagging_predict(trees, row):
     return max(set(predictions), key=predictions.count)
  
 # Random Forest Algorithm
-def random_forest(train, test, max_depth, min_size, sample_size, n_trees, n_features):
+def random_forest(train, test, test2, max_depth, min_size, sample_size, n_trees, n_features):
     trees = list()
     for i in range(n_trees):
         sample = subsample(train, sample_size)
         tree = build_tree(sample, max_depth, min_size, n_features)
         trees.append(tree)
     predictions = [bagging_predict(trees, row) for row in test]
-    return(predictions)
+    i = 0
+    usernames = list()
+    for prediction in predictions: 
+            if prediction == '1':
+                usernames.append(test2[i][0])
+                i= i+1
+    return(usernames)
+
+
  
 # Test the random forest algorithm
 seed(1)
 
 # load and prepare data
 filename = 'firstlabelling.csv'
-dataset = load_csv(filename)
+dataset = load_csv1(filename)
 
-testfile = 'AnnieSet500_withoutText2.csv'
-testset = load_csv(testfile)
+testfile = 'firstlabelling.csv'
+testset1 = load_csv1(testfile)
+testset2 = load_csv2(testfile)
 
 max_depth = 50
 min_size = 1
@@ -153,4 +170,4 @@ sample_size = 1.0
 n_features = int(sqrt(len(dataset[0])-1)) 
 n_trees = 5
     
-print(random_forest(dataset, dataset, max_depth, min_size, sample_size, n_trees, n_features))
+print(random_forest(dataset, testset1, testset2, max_depth, min_size, sample_size, n_trees, n_features))
