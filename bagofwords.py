@@ -6,7 +6,7 @@ def bagOfWords(input):
     text = re.sub("[^a-zA-Z]", " ", input).lower().split()
     
     #open file containing words for bag of words
-    open_file = open('english.txt', 'r')
+    open_file = open('depressedwords.txt', 'r')
     
     #initialise outputs
     formattedOutput = ""
